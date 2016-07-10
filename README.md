@@ -6,3 +6,5 @@ Versão do Bot: v0.3
 #Comandos
 <b>/help</b> - retornar a lista de comandos do bot!<br>
 <b>/admins</b> - retornar os donos do grupo!
+<b>/func_regras</b> - editas as regras do grupo!
+<b>/regras</b> - retornar as regras do grupo!
