@@ -4,27 +4,36 @@ import (
     "log"
     "gopkg.in/telegram-bot-api.v4"
     "strings"
+    "io/ioutil"
+    "strconv"
 )
 
-var string_s []string
+var(
+    ReiGel_ado int = 0
+    Barionix   int = 0
+    id_string string
+)
 
 const ( 
-    Bot_Token = "PegadinhaDoMalanadro"//(Outro)
-    Bot_V     = " v0.3"
+    Bot_Token = ""
+    //Bot_Token = ""
+    Bot_V     = " v0.4"
     Bot_Name  = "@GoLangCodingBot"
+    Rules     = "rules.txt" 
+    TDV       = "txt_da_vergonha.txt"
 )
 
 func error_check(log_error error){
     if log_error != nil {
-        log.Panic(log_error)
+        //log.Panic(log_error)
     }
 }
-
+/////////////////////////////FUNÇÕES RELACIONADAS AO BOT/SERVIDOR///////////////////////////////////////////
 func Inicia_Bot()(*tgbotapi.BotAPI, error){
     bot, err := tgbotapi.NewBotAPI(Bot_Token)
     error_check(err)
 
-    bot.Debug = true
+    bot.Debug = false
 
     return bot, err
 }
@@ -49,26 +58,63 @@ func Responder_Mensagens(ChatID int64,Mensagem string,MensagemID int){
 
     bot.Send(msg)
 }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////FUNÇÕES RELACIONADAS A COMANDO/////////////////////////////////
 func Verifica_Comando(mensagem string)bool{
     if string(mensagem[0]) == "/"{
-        log.Printf("oi")
         return true
     }else{
         return false
     }
     return false
 }
-func Comandos(mensagem string) string {
-    if strings.Contains(mensagem,"/help"){
-        return "<b>Comandos:</b>\n\n/help\n/admins\n\n<b>Versão do Bot:" + Bot_V + "</b>"
-    }
-    if strings.Contains(mensagem,"/admins"){
+func Comandos(mensagem string,id_usuario int,username string) string {
+    ///////////////////////REGRAS//////////////////////////////////Q
+    id_string = strconv.Itoa(id_usuario)
+    if strings.Contains(mensagem,"/func_regras"){
+        novas_regras := strings.Replace(mensagem,"/func_regras","",-1) //Tira o comando da mensagem  :D
+        if id_usuario == ReiGel_ado{   
+            Escreve(Rules,novas_regras)
+            log.Printf("[-]Regras atualizadas por ReiGel_ado!")
+            return "<b>As regras foram atualizadas com sucesso pelo admin ReiGel_ado!</b>\n\n<b>Versão do Bot:" + Bot_V + "</b>"
+        }else if id_usuario == Barionix{
+            Escreve(Rules,novas_regras)
+            log.Printf("[-]Regras atualizadas por Barionix!")
+            return "<b>As regras foram atualizadas com sucesso pelo admin Barionix!</b>\n\n<b>Versão do Bot:" + Bot_V + "</b>"
+        }else{
+            txt_da_vergonha := Leitor(TDV)
+            escreve_txt := txt_da_vergonha + "-" + username + " - ID:" + strconv.Itoa(id_usuario)
+            Escreve(TDV,escreve_txt)
+            log.Printf("[-]O usuario " + username + " de ID:" + strconv.Itoa(id_usuario) + " tentou alterar as regras!")
+            return "<b>Temos um engraçadinho!\nParabens!\nSeu nome esta no txt da vergonha ;-;!</b>\n\n\n<b>Versão do Bot:" + Bot_V + "</b>"
+        }
+    }else if strings.Contains(mensagem,"/regras"){
+        regras := Leitor(Rules)
+        return regras + "\n\n<b>Versão do Bot:" + Bot_V + "</b>"
+    ////////////////////////////////////////////////////////////////////Q
+    }else if strings.Contains(mensagem,"/help"){
+        return "<b>Comandos:</b>\n\n/help\n/admins\n/regras\n/func_regras - (Somente Admins)\n/txt_da_vergonha\n\n<b>Versão do Bot:" + Bot_V + "</b>"
+    }else if strings.Contains(mensagem,"/admins"){
         return "<b>Caso ocorra algum problema ,não fale com sua mãe, fale com :</b>\n\n@ReiGel_ado<b> ou </b>@Barionix\n\n<b>Versão do Bot:" + Bot_V + "</b>"
+    }else if strings.Contains(mensagem,"/txt_da_vergonha"){
+        tdv := Leitor(TDV)
+        return "<b>###########MURAL DA VERGONHA###########</b>\n\n" + tdv + "\n\n<b>Versão do Bot:" + Bot_V + "</b>"
     }
     return "Comando não encontrado,use o /help para saber os comandos!"
 }
-
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////FUNÇÕES RELACIONADAS AO SISTEMA//////////////////////////////////////
+func Leitor(arquivo string) string{
+    conteudo_arquivo , err := ioutil.ReadFile(arquivo)
+    error_check(err)
+    return string(conteudo_arquivo)
+}
+func Escreve(arquivo string,conteudo string){
+    conteudo_arquivo := []byte(conteudo)
+    err := ioutil.WriteFile(arquivo, conteudo_arquivo , 0777)
+    error_check(err)
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func main() {
     bot,err := Inicia_Bot()
     error_check(err)
@@ -99,7 +145,7 @@ func main() {
             continue
         }else{
             if Verifica_Comando(msg.Message.Text) == true{
-                Mandar_Mensagen(msg.Message.Chat.ID,Comandos(msg.Message.Text))
+                Mandar_Mensagen(msg.Message.Chat.ID,Comandos(msg.Message.Text,msg.Message.From.ID,msg.Message.From.UserName))
             }
         }
     }
