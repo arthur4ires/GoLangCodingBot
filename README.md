@@ -8,7 +8,7 @@ Versão do Bot: v0.5
 <b>/admins</b> - retornar os donos do grupo!<br>
 <b>/func_regras</b> - editas as regras do grupo!<br>
 <b>/regras</b> - retornar as regras do grupo!<br>
-<v>/kick</b> - kica um membro<br>
-<v>/ban</b> - bani um membro<br>
-<v>/imagem</b> - baixa e manda uma imagem<br>
-<v>/clear</b> - apaga um arquivo<br>
+<b>/kick</b> - kica um membro<br>
+<b>/ban</b> - bani um membro<br>
+<b>/imagem</b> - baixa e manda uma imagem<br>
+<b>/clear</b> - apaga um arquivo<br>
