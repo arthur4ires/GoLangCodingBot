@@ -14,5 +14,5 @@ Versão do Bot: v0.5
 <b>/clear</b> - apaga um arquivo<br>
 <b>/txt_da_vergonha</b> - exibe os haskers do grupo!<br>
 <b>/tts</b> - trasnforma audio em texto!!<br>
-#Comandos
-<b>Um salve pro meu amigo <a href="https://github.com/nubunto">@Panuto</a>que ajudou com a instancia e codigo :) </b><br>
+#Pessoinhas Legais
+<b>Um salve pro meu amigo <a href="https://github.com/nubunto">@Panuto</a> que ajudou com a instancia e codigo :) </b><br>
