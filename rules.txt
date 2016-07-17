@@ -13,6 +13,6 @@
  
 <b>PS:Fica a critétios dos ADMs julgar um conteúdo como próprio ou impróprio.</b>
 <b>PS-2:Em caso de pertubação sa ordem do grupo o usuário levar um aviso, na proxima ocorrencia será banido.
-(Casos especiais serão avaliados pelos ADMs).*</b>\n
+(Casos especiais serão avaliados pelos ADMs).</b>
 
 <b>Caso tenha duvida sobre quem são os administradores , use o comando /admins :)</b>

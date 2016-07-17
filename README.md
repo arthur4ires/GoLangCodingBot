@@ -12,3 +12,7 @@ Versão do Bot: v0.5
 <b>/ban</b> - bani um membro<br>
 <b>/imagem</b> - baixa e manda uma imagem<br>
 <b>/clear</b> - apaga um arquivo<br>
+<b>/txt_da_vergonha</b> - exibe os haskers do grupo!<br>
+<b>/tts</b> - trasnforma audio em texto!!<br>
+#Comandos
+<b>Um salve pro meu amigo <a href="https://github.com/nubunto">@Panuto</a>que ajudou com a instancia e codigo :) </b><br>
