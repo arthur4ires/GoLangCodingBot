@@ -171,7 +171,7 @@ func Regras()string{
     return regras + "\n\n<b>Versão do Bot:" + Bot_V + "</b>"
 }
 func Help()string{
-    return "<b>Comandos(Usuarios):</b>\n\n/help\n/admins\n/regras\n/txt_da_vergonha\n/imagem\n\n<b>Comandos(Admins):</b>\n\n/func_regras\n/kick\n/ban\n/clear\n\n\n<b>Versão do Bot:" + Bot_V + "</b>"
+    return "<b>Comandos(Usuarios):</b>\n\n/ajuda\n/admins\n/regras\n/txt_da_vergonha\n/imagem\n\n<b>Comandos(Admins):</b>\n\n/func_regras\n/kick\n/ban\n/clear\n\n\n<b>Versão do Bot:" + Bot_V + "</b>"
 }
 func Admins_C(ChatID int64,bot *tgbotapi.BotAPI)string{
     //slice_admins := Retorna_Admins(ChatID,bot) Implementação futura,tenho que aprender a trabalhar com a bosta dos types
@@ -242,7 +242,7 @@ func Comandos(mensagem string,id_usuario int,username string,ChatID int64,db *sq
         return Func_Regras(mensagem,username,id_usuario)
     }else if strings.Contains(mensagem,"/regras"){
         return Regras()
-    }else if strings.Contains(mensagem,"/help"){
+    }else if strings.Contains(mensagem,"/ajuda"){
         return Help()
     }else if strings.Contains(mensagem,"/admins"){
         return Admins_C(ChatID,bot)
