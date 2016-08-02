@@ -6,7 +6,6 @@ import (
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"gopkg.in/telegram-bot-api.v4"
-	_ "io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -14,16 +13,28 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"io"
 )
+
+type User struct{
+	Name string
+	Id int
+}
+type jsonConfig struct {
+	BotToken string
+	User []User
+}
 
 var (
 	id_usuario int
 	user_admin string
+	config jsonConfig
+	botToken string
+	reiGel_ado int
+	barionix int
 )
 
 const (
-	//Bot_Token = "" //Meu
-	Bot_Token = "" //GoLafTest
 	Bot_V     = "v0.7.2"
 	//botName                 = "@GoLangCodingBot"
 	botName             = "GoLangCodingBot"
@@ -32,13 +43,11 @@ const (
 	TDV                 = "txt_da_vergonha.txt"
 	tabela_user         = "usuarios"
 	tabela_banidos      = "usuarios_banidos"
-	ReiGel_ado      int = 0
-	Barionix        int = 0
 )
 
 /////////////////////////////FUNÇÕES RELACIONADAS AO BOT/SERVIDOR/DATABASE///////////////////////////////////
 func iniciaBot() (*tgbotapi.BotAPI, error) {
-	bot, err := tgbotapi.NewBotAPI(Bot_Token)
+	bot, err := tgbotapi.NewBotAPI(botToken)
 	logError(err)
 
 	bot.Debug = false
@@ -60,9 +69,9 @@ func logError(log_error error) {
 
 /////////////////////////////FUNÇÕES REACIONADAS A PERMISSÕES//////////////////////////////////////////////
 func permCheck(id_usuario int) string {
-	if id_usuario == ReiGel_ado {
+	if id_usuario == reiGel_ado {
 		return "ReiGel_ado"
-	} else if id_usuario == Barionix {
+	} else if id_usuario == barionix {
 		return "Barionix"
 	} else {
 		return "false"
@@ -320,6 +329,20 @@ func validaUrl(url_download string) bool {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func main() {
+	jsonConfigF := leitorArquivo("config/config.json")
+	dec := json.NewDecoder(strings.NewReader(jsonConfigF))
+	for {
+		if err := dec.Decode(&config); err == io.EOF {
+			break
+		} else if err != nil {
+			logError(err)
+		}
+	}
+
+	botToken = config.BotToken
+	reiGel_ado = config.User[0].Id
+	barionix = config.User[1].Id
+
 	bot, err := iniciaBot()
 	logError(err)
 	db, err := iniciaDatabase()
