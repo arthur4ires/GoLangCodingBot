@@ -167,7 +167,7 @@ func regrasPrint() string {
 	return regras + ""
 }
 func help() string {
-	return "<b> Comandos(Usuarios):</b>\n\n/help\n/admins\n/regras\n/txt_da_vergonha\n/imagem\n/tss\n\n<b> Comandos(Admins):</b>\n\n/func_regras\n/kick\n/ban\n/clear\n"
+	return "<b> Comandos(Usuarios):</b>\n\n/help\n/admins\n/regras\n/txt_da_vergonha\n/imagem\n/tts\n\n<b> Comandos(Admins):</b>\n\n/func_regras\n/kick\n/ban\n/clear\n"
 }
 func adminsComando(ChatID int64, bot *tgbotapi.BotAPI) string {
 	//admins := returnAdmins(ChatID,bot) na proxima versão eu implemento...
