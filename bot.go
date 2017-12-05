@@ -6,6 +6,7 @@ import (
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"gopkg.in/telegram-bot-api.v4"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,39 +14,37 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"io"
 )
 
-type User struct{
+type User struct {
 	Name string
-	Id int
+	Id   int
 }
 type jsonConfig struct {
 	BotToken string
-	User []User
+	User     []User
 }
 
 var (
 	id_usuario int
 	user_admin string
-	config jsonConfig
-	botToken string
+	config     jsonConfig
+	botToken   string
 	reiGel_ado int
-	barionix int
+	barionix   int
 )
 
 const (
-	Bot_V     = "v0.7.2"
-	//botName                 = "@GoLangCodingBot"
-	botName             = "GoLangCodingBot"
-	urlApiTranslate     = "https://translate.google.com/translate_tts?ie=UTF-8&tl=pt-BR&client=tw-ob&q="
-	Rules               = "rules.txt"
-	TDV                 = "txt_da_vergonha.txt"
-	tabela_user         = "usuarios"
-	tabela_banidos      = "usuarios_banidos"
+	Bot_V           = "v0.7.2"
+	botName         = "GoLangCodingBot"
+	urlApiTranslate = "https://translate.google.com/translate_tts?ie=UTF-8&tl=pt-BR&client=tw-ob&q="
+	Rules           = "rules.txt"
+	TDV             = "txt_da_vergonha.txt"
+	tabela_user     = "usuarios"
+	tabela_banidos  = "usuarios_banidos"
 )
 
-/////////////////////////////FUNÇÕES RELACIONADAS AO BOT/SERVIDOR/DATABASE///////////////////////////////////
+//Funções relacionadas ao Bot/Servidor/Database
 func iniciaBot() (*tgbotapi.BotAPI, error) {
 	bot, err := tgbotapi.NewBotAPI(botToken)
 	logError(err)
@@ -54,12 +53,14 @@ func iniciaBot() (*tgbotapi.BotAPI, error) {
 
 	return bot, err
 }
+
 func iniciaDatabase() (*sql.DB, error) {
 	db, err := sql.Open("sqlite3", "./database.db")
 	logError(err)
 
 	return db, err
 }
+
 func logError(log_error error) {
 	if log_error != nil {
 		log.Println("[ERROR]", log_error)
@@ -67,7 +68,7 @@ func logError(log_error error) {
 	}
 }
 
-/////////////////////////////FUNÇÕES REACIONADAS A PERMISSÕES//////////////////////////////////////////////
+//Funções relacionadas à permissões
 func permCheck(id_usuario int) string {
 	if id_usuario == reiGel_ado {
 		return "ReiGel_ado"
@@ -84,6 +85,7 @@ func kickUser(id_usuario int, ChatID int64, bot *tgbotapi.BotAPI) {
 	}
 	bot.KickChatMember(k)
 }
+
 func returnAdmins(ChatID int64, bot *tgbotapi.BotAPI) []tgbotapi.ChatMember {
 	k := tgbotapi.ChatConfig{
 		ChatID: ChatID,
@@ -100,8 +102,8 @@ func txtdavergonhaArquivo(username string, id_usuario int, motivo string) {
 	log.Printf("[-]O usuario " + username + " de ID:" + strconv.Itoa(id_usuario) + " tentou " + motivo + "!")
 }
 
-///////////////////////////////////////////BASE DE DADOS////////////////////////////////////////////////////
-func rUser(db sql.DB, username string, tabela string) (id_usuario int) { //Para o @panuto que não entende minha pog mais que esta implicito o que a função faz(olha o comando sql)ele vai puxar pelo nome do usuario o id do telegram que esta salvo no db :)
+//Base de dados
+func rUser(db sql.DB, username string, tabela string) (id_usuario int) {
 	rows, err := db.Query("SELECT id_usuario FROM " + tabela + " WHERE username = '" + username + "'")
 	logError(err)
 	for rows.Next() {
@@ -140,8 +142,8 @@ func mandaAudio(ChatID int64, UserName string, bot *tgbotapi.BotAPI) {
 	bot.Send(msg)
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////FUNÇÕES RELACIONADAS A COMANDO/////////////////////////////////
+//Funções relacionadas à comando
+
 func Verifica_Comando(mensagem string) bool {
 	if string(mensagem[0]) == "/" {
 		return true
@@ -155,7 +157,7 @@ func funcRegras(mensagem string, username string, id_usuario int) string {
 	user_admin = permCheck(id_usuario)
 	if user_admin == "false" {
 		txtdavergonhaArquivo(username, id_usuario, "alterar as regras")
-		return "<b>Você esta muito gracioso @" + username + "\nParabens!\nSeu nome esta no txt da vergonha ;-;!</b>\n"
+		return "<b>Que gracioso @" + username + "\nParabens!\nSeu nome esta no Mural da vergonha ¬¬ !</b>\n"
 	} else {
 		escreveArquivo(Rules, novas_regras)
 		log.Printf("[-]Regras atualizadas por " + user_admin)
@@ -171,7 +173,7 @@ func help() string {
 }
 func adminsComando(ChatID int64, bot *tgbotapi.BotAPI) string {
 	//admins := returnAdmins(ChatID,bot) na proxima versão eu implemento...
-	return "<b>Caso ocorra algum problema ,não fale com sua mãe, fale com :\n\n@ReiGel_ado(Programador) ou @Barionix(Criador)</b>"
+	return "<b>Caso ocorra algum problema ,não vá chorar para sua mamãe, fale com :\n\n@ReiGel_ado(Programador) ou @Barionix(Criador)</b>"
 }
 func kickComando(ChatID int64, mensagem string, id_usuario int, username string, db *sql.DB, bot *tgbotapi.BotAPI) string {
 	novo_username := tratamentoString(mensagem, "/kick")
@@ -179,7 +181,7 @@ func kickComando(ChatID int64, mensagem string, id_usuario int, username string,
 	user_admin = permCheck(id_usuario)
 	if user_admin == "false" {
 		txtdavergonhaArquivo(username, id_usuario, " kikar um amiguinho do grupo ")
-		return "<b>Você esta muito gracioso @" + username + "\nParabens!\nSeu nome esta no txt da vergonha ;-;!</b>\n"
+		return "<b>Que gracioso @" + username + "\nParabens!\nSeu nome esta no txt da vergonha ;-;!</b>\n"
 	} else {
 		if id_usuario_db == 0 {
 			return "<b>O usuario não consta em nossa base de dados!</b>"
@@ -272,8 +274,7 @@ func comandos(mensagem string, id_usuario int, username string, ChatID int64, db
 	return "Comando não encontrado,use o /help para saber os comandos!"
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////FUNÇÕES RELACIONADAS AO SISTEMA//////////////////////////////////////
+//Funções relacionado ao Sistema
 func leitorArquivo(arquivo string) string {
 	conteudo_arquivo, err := ioutil.ReadFile(arquivo)
 	if err != nil {
@@ -304,7 +305,7 @@ func jsonS(decode *tgbotapi.User) string {
 	return string(out)
 }
 
-//////////////////////////////////////////"NAVEGADOR"////////////////////////////////////////////////////
+//Navegador
 func baixarArquivo(url_download string) string {
 	resp, err := http.Get(url_download)
 	logError(err)
@@ -327,7 +328,6 @@ func validaUrl(url_download string) bool {
 	return true
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 func main() {
 	jsonConfigF := leitorArquivo("config/config.json")
 	dec := json.NewDecoder(strings.NewReader(jsonConfigF))
@@ -361,7 +361,7 @@ func main() {
 		if msg.Message == nil {
 			continue
 		}
-		//////////////////////////////Verifica o BAN//////////////////
+		//Verifica o Ban
 		if msg.Message.NewChatMember != nil {
 			usuario := fmt.Sprintf("%s", msg.Message.NewChatMember)
 			if rUser(*db, string(usuario), tabela_banidos) == 0 {
@@ -371,12 +371,11 @@ func main() {
 				msg.Message.NewChatMember = nil
 			}
 		}
-		///////////////////////////////Cadastra o Usuario//////////////////////////////////////
+		//Cadastra o Usuario
 		if rUser(*db, msg.Message.From.UserName, tabela_user) != msg.Message.From.ID {
 			iUser(*db, msg.Message.From.UserName, msg.Message.From.ID, tabela_user)
 			log.Println("[+]O usuario " + msg.Message.From.UserName + "(ID:" + strconv.Itoa(msg.Message.From.ID) + ") foi cadastrado!")
 		}
-		/////////////////////////////////////////////////////////////////////////////////////////
 		if msg.Message.Text != "" {
 			log.Printf("[%s] %s", msg.Message.From.UserName, msg.Message.Text)
 		}
@@ -385,8 +384,7 @@ func main() {
 			mandarMensagem(msg.Message.Chat.ID, "<b>Esse deve ter feito merda....( ͡° ͜ʖ ͡°)</b>", bot)
 		}
 		if msg.Message.NewChatMember != nil {
-			log.Printf("[%s] foi adicionado/convidado ao grupo por %s!", msg.Message.NewChatMember, msg.Message.From.UserName)
-			mandarMensagem(msg.Message.Chat.ID, "<b>Eai GOleiro , seja bem vindo a alcateia! Mas conta ai , como chegou aqui ?\n\nVersão do Bot:"+Bot_V+"</b>", bot)
+			mandarMensagem(msg.Message.Chat.ID, "<b>Seja bem vindo a alcateia! Mas conta ai , como chegou aqui ?", bot)
 		}
 
 		if msg.Message.Text == "" {
